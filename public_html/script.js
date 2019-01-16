@@ -1,14 +1,14 @@
-const toggleImageOpecity = function() {
-  const image = document.getElementById('animated_image');
-  image.style.opacity = 0;
+const hideForOneSecond = function() {
+  const target = event.target;
+  target.style.visibility = 'hidden';
   setTimeout(() => {
-    image.style.opacity = 1;
+    target.style.visibility = 'visible';
   }, 1000);
 };
 
 const setEventListner = function() {
   const image = document.getElementById('animated_image');
-  image.onclick = toggleImageOpecity;
+  image.onclick = hideForOneSecond;
 };
 
 window.onload = setEventListner;

@@ -4,28 +4,23 @@ const displayLog = function(req, res) {
   console.log(req.method, req.url);
 };
 
-const getFileName = function(url) {
+const getFilePath = function(url) {
   if (url == '/') return './index.html';
   return '.' + url;
 };
 
-const send = function(res, data) {
-  res.statusCode = 200;
-  res.write(data);
-  res.end();
-};
-
-const sendNotFound = function(res) {
-  res.statusCode = 404;
+const send = function(res, statusCode, content) {
+  res.statusCode = statusCode;
+  res.write(content);
   res.end();
 };
 
 const app = (req, res) => {
   displayLog(req, res);
-  const path = getFileName(req.url);
+  const path = getFilePath(req.url);
   fs.readFile(path, (err, data) => {
-    if (!err) return send(res, data);
-    return sendNotFound(res);
+    if (err) return send(res, 404, 'Page not found');
+    send(res, 200, data);
   });
 };
 

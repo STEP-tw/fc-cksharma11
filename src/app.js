@@ -10,6 +10,7 @@ const getFileName = function(url) {
 };
 
 const send = function(res, data) {
+  res.statusCode = 200;
   res.write(data);
   res.end();
 };

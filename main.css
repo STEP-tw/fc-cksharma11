@@ -1,0 +1,15 @@
+.heading{
+  text-align: center;
+  color: rgb(194, 157, 111);
+  border-bottom: 1px solid black;
+  border-top: 1px solid rgb(188, 199, 229);
+}
+
+.image{
+  margin: 10px;
+  border:1px solid black;
+}
+
+.menu{
+  display: flex;
+}

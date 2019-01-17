@@ -3,21 +3,19 @@ const Express = require('./express');
 const app = new Express();
 
 const HOME_DIR = './public_html';
-const HOME_PAGE = '/index.html';
 const ERROR_404 = 'Page not found';
 const GUEST_BOOK_URL = './public_html/guest_book.html';
 const COMMENTS_FILE = './data/comments.json';
+const REDIRECTS = { '/': './public_html/index.html' };
+const UTF8 = 'UTF8';
 
 const logRequest = function(req, res, next) {
   console.log(req.method, req.url);
   next();
 };
 
-const isHomePageRequest = url => url == '/';
-
-const getFilePath = function(url) {
-  if (isHomePageRequest(url)) return HOME_DIR + HOME_PAGE;
-  return HOME_DIR + url;
+const resolveRequestedFile = function(url) {
+  return REDIRECTS[url] || HOME_DIR + url;
 };
 
 const send = function(res, statusCode, content) {
@@ -26,23 +24,23 @@ const send = function(res, statusCode, content) {
   res.end();
 };
 
-const serveFile = function(req, res) {
-  const filePath = getFilePath(req.url);
-  fs.readFile(filePath, (err, data) => {
-    if (err) return send(res, 404, ERROR_404);
+const renderFile = function(req, res) {
+  const filePath = resolveRequestedFile(req.url);
+  fs.readFile(filePath, (error, data) => {
+    if (error) return send(res, 404, ERROR_404);
     send(res, 200, data);
   });
 };
 
-const parse = function(comment) {
-  let data = {};
+const parseCommentDetails = function(comment) {
+  const result = new Object();
   comment
     .split('&')
     .map(pair => pair.split('='))
     .map(([key, value]) => {
-      data[key] = value.replace(/\+/g, ' ');
+      result[key] = value.replace(/\+/g, ' ');
     });
-  return data;
+  return result;
 };
 
 const createJSON = function(data) {
@@ -51,44 +49,44 @@ const createJSON = function(data) {
 };
 
 const createCommentsSection = function(guest_book, commentsJSON) {
-  commentsJSON.map(comment => {
-    guest_book += `<h3>${comment.date}:${comment.Name}:${comment.comment}</h3>`;
+  commentsJSON.forEach(comment => {
+    guest_book += `<h4>${comment.date}:${comment.Name}:${comment.comment}</h4>`;
   });
   return guest_book;
 };
 
 const serveGuestBookPage = function(req, res) {
-  fs.readFile(GUEST_BOOK_URL, 'UTF8', (err, guest_book) => {
-    fs.readFile(COMMENTS_FILE, 'UTF8', (err, data) => {
-      const json = createJSON(data);
-      const pageWithComments = createCommentsSection(guest_book, json);
-      send(res, 200, pageWithComments);
+  fs.readFile(GUEST_BOOK_URL, UTF8, (error, guestBook) => {
+    fs.readFile(COMMENTS_FILE, UTF8, (error, comments) => {
+      const json = createJSON(comments);
+      const guestBookWithComment = createCommentsSection(guestBook, json);
+      send(res, 200, guestBookWithComment);
     });
   });
 };
 
 const saveComment = function(req, res) {
-  const parsedComment = parse(req.body);
-  parsedComment.date = new Date().toLocaleString();
-  fs.appendFile(COMMENTS_FILE, JSON.stringify(parsedComment), err => {
+  const commentDetails = parseCommentDetails(req.body);
+  commentDetails.date = new Date().toLocaleString();
+  fs.appendFile(COMMENTS_FILE, JSON.stringify(commentDetails), error => {
     serveGuestBookPage(req, res);
   });
 };
 
 const readPostData = function(req, res, next) {
-  let data = '';
-  req.on('data', chunk => (data += chunk));
-  req.on('end', err => {
-    req.body = data;
+  const postData = { body: '' };
+  req.on('data', chunk => (postData.body += chunk));
+  req.on('end', error => {
+    req.body = postData.body;
     next();
   });
 };
 
 app.use(logRequest);
 app.use(readPostData);
-app.get('/', serveFile);
+app.get('/', renderFile);
 app.get('/guest_book.html', serveGuestBookPage);
 app.post('/guest_book.html', saveComment);
-app.use(serveFile);
+app.use(renderFile);
 
 module.exports = app.handleRequest.bind(app);

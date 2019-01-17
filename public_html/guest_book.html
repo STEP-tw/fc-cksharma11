@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Page Title</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div class="input">
+      <header class="heading">
+        <h1><a href="index.html"><<</a>Guest Book</h1>
+      </header>
+      <h2>Leave a comment</h2>
+      <form action="" method="GET">
+        <table>
+          <thead>
+            <tr>
+              <td><label>Name : </label></td>
+              <td><input class="input" type="text" name="Name" id="name" /></td>
+            </tr>
+
+            <tr>
+              <td><label>Comment : </label></td>
+              <td>
+                <textarea
+                  class="input"
+                  name="comment"
+                  id="comment"
+                  cols="40"
+                  rows="5"
+                ></textarea>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                  <input type="submit" />
+              </td>
+            </tr>
+          </thead>
+        </table>
+      </form>
+      <div class="comment">
+        <table id="comments_list">
+          <thead>
+            <tr>
+              DATE_TIME &nbsp;&nbsp;&nbsp;
+            </tr>
+            <tr>
+              NAME &nbsp;&nbsp;&nbsp;
+            </tr>
+            <tr>
+              COMMENT &nbsp;&nbsp;&nbsp;
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

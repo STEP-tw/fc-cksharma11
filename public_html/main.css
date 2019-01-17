@@ -11,4 +11,13 @@
 
 .menu{
   display: flex;
+} 
+
+.input{
+  font-size: 20px;
+}
+
+.comment{
+  margin-top: 20px;
+  border-top:1px solid black;
 }

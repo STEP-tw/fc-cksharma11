@@ -1,11 +1,14 @@
 const fs = require('fs');
+const Express = require('./express');
+const app = new Express();
 
 const ROOT = './public_html';
 const HOME = '/index.html';
 const ERROR_404 = 'Page not found';
 
-const displayLog = function(req, res) {
+const logRequest = function(req, res, next) {
   console.log(req.method, req.url);
+  next();
 };
 
 const isHomePageRequest = url => url == '/';
@@ -21,7 +24,7 @@ const send = function(res, statusCode, content) {
   res.end();
 };
 
-const handleRequest = function(req, res) {
+const serveFile = function(req, res) {
   const filePath = getFilePath(req.url);
   fs.readFile(filePath, (err, data) => {
     if (err) return send(res, 404, ERROR_404);
@@ -29,9 +32,7 @@ const handleRequest = function(req, res) {
   });
 };
 
-const app = (req, res) => {
-  displayLog(req, res);
-  handleRequest(req, res);
-};
+app.use(logRequest);
+app.use(serveFile);
 
-module.exports = app;
+module.exports = app.handleRequest.bind(app);

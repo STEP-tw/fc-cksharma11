@@ -44,7 +44,7 @@ const parseCommentDetails = function(comment) {
     .split('&')
     .map(pair => pair.split('='))
     .map(([key, value]) => {
-      result[key] = value.replace(/\+/g, ' ');
+      result[key] = decodeURIComponent(value).replace(/\+/g, ' ');
     });
   return result;
 };

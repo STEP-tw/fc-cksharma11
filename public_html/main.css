@@ -11,6 +11,7 @@
 
 .menu{
   display: flex;
+  word-wrap: break-word;
 } 
 
 .input{

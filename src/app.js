@@ -1,13 +1,19 @@
 const fs = require('fs');
 const Express = require('./express');
 const app = new Express();
-
-const HOME_DIR = './public_html';
-const NOT_FOUND_PAGE = './public_html/not_found.html';
-const GUEST_BOOK_URL = './public_html/guest_book.html';
-const COMMENTS_FILE = './data/comments.json';
-const REDIRECTS = { '/': './public_html/index.html' };
-const UTF8 = 'UTF8';
+const {
+  parseCommentDetails,
+  createJSON,
+  createCommentsSection
+} = require('./serverUtils');
+const {
+  HOME_DIR,
+  NOT_FOUND_PAGE,
+  GUEST_BOOK_URL,
+  COMMENTS_FILE,
+  REDIRECTS,
+  UTF8
+} = require('./constants');
 
 const logRequest = function(req, res, next) {
   console.log(req.method, req.url);
@@ -36,29 +42,6 @@ const renderFile = function(req, res) {
     if (error) return render404Page(req, res);
     send(res, 200, data);
   });
-};
-
-const parseCommentDetails = function(comment) {
-  const result = new Object();
-  comment
-    .split('&')
-    .map(pair => pair.split('='))
-    .map(([key, value]) => {
-      result[key] = decodeURIComponent(value).replace(/\+/g, ' ');
-    });
-  return result;
-};
-
-const createJSON = function(data) {
-  const rawData = '[' + data.replace(/}{/g, '},{') + ']';
-  return JSON.parse(rawData).reverse();
-};
-
-const createCommentsSection = function(guest_book, commentsJSON) {
-  commentsJSON.forEach(comment => {
-    guest_book += `<p>${comment.date}:${comment.Name}:${comment.comment}</p>`;
-  });
-  return guest_book;
 };
 
 const serveGuestBookPage = function(req, res) {

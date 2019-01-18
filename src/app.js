@@ -1,48 +1,16 @@
 const fs = require('fs');
 const Express = require('./express');
 const app = new Express();
+
 const {
   parseCommentDetails,
   createJSON,
   createCommentsSection
 } = require('./serverUtils');
-const {
-  HOME_DIR,
-  NOT_FOUND_PAGE,
-  GUEST_BOOK_URL,
-  COMMENTS_FILE,
-  REDIRECTS,
-  UTF8
-} = require('./constants');
 
-const logRequest = function(req, res, next) {
-  console.log(req.method, req.url);
-  next();
-};
+const { GUEST_BOOK_URL, COMMENTS_FILE, UTF8 } = require('./constants');
 
-const resolveRequestedFile = function(url) {
-  return REDIRECTS[url] || HOME_DIR + url;
-};
-
-const send = function(res, statusCode, content) {
-  res.statusCode = statusCode;
-  res.write(content);
-  res.end();
-};
-
-const render404Page = function(req, res) {
-  fs.readFile(NOT_FOUND_PAGE, (err, data) => {
-    send(res, 404, data);
-  });
-};
-
-const renderFile = function(req, res) {
-  const filePath = resolveRequestedFile(req.url);
-  fs.readFile(filePath, (error, data) => {
-    if (error) return render404Page(req, res);
-    send(res, 200, data);
-  });
-};
+const { logRequest, send, renderFile } = require('./appHelper');
 
 const serveGuestBookPage = function(req, res) {
   fs.readFile(GUEST_BOOK_URL, UTF8, (error, guestBook) => {

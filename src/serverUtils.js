@@ -1,12 +1,10 @@
 const parseCommentDetails = function(comment) {
-  const result = new Object();
-  comment
-    .split('&')
-    .map(pair => pair.split('='))
-    .map(([key, value]) => {
-      result[key] = decodeURIComponent(value).replace(/\+/g, ' ');
-    });
-  return result;
+  const commentObject = new Object();
+  const decodedComment = decodeURIComponent(comment).replace(/\+/g, ' ');
+  const [, author, , commentText] = decodedComment.split(/=|&/);
+  commentObject.Name = author;
+  commentObject.comment = commentText;
+  return commentObject;
 };
 
 const createCommentsSection = function(comment) {
@@ -15,6 +13,5 @@ const createCommentsSection = function(comment) {
 
 module.exports = {
   parseCommentDetails,
-  createJSON,
   createCommentsSection
 };

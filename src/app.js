@@ -2,10 +2,7 @@ const fs = require('fs');
 const Express = require('./express');
 const app = new Express();
 
-const {
-  parseCommentDetails,
-  createCommentsSection
-} = require('./serverUtils');
+const { parseCommentDetails, createCommentsSection } = require('./serverUtils');
 
 const { GUEST_BOOK_URL, COMMENTS_FILE, UTF8 } = require('./constants');
 

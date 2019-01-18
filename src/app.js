@@ -3,7 +3,7 @@ const Express = require('./express');
 const app = new Express();
 
 const HOME_DIR = './public_html';
-const ERROR_404 = 'Page not found';
+const NOT_FOUND_PAGE = './public_html/not_found.html';
 const GUEST_BOOK_URL = './public_html/guest_book.html';
 const COMMENTS_FILE = './data/comments.json';
 const REDIRECTS = { '/': './public_html/index.html' };
@@ -24,10 +24,16 @@ const send = function(res, statusCode, content) {
   res.end();
 };
 
+const render404Page = function(req, res) {
+  fs.readFile(NOT_FOUND_PAGE, (err, data) => {
+    send(res, 404, data);
+  });
+};
+
 const renderFile = function(req, res) {
   const filePath = resolveRequestedFile(req.url);
   fs.readFile(filePath, (error, data) => {
-    if (error) return send(res, 404, ERROR_404);
+    if (error) return render404Page(req, res);
     send(res, 200, data);
   });
 };

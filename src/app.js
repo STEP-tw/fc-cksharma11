@@ -45,12 +45,12 @@ const parseCommentDetails = function(comment) {
 
 const createJSON = function(data) {
   const rawData = '[' + data.replace(/}{/g, '},{') + ']';
-  return JSON.parse(rawData);
+  return JSON.parse(rawData).reverse();
 };
 
 const createCommentsSection = function(guest_book, commentsJSON) {
   commentsJSON.forEach(comment => {
-    guest_book += `<h4>${comment.date}:${comment.Name}:${comment.comment}</h4>`;
+    guest_book += `<p>${comment.date}:${comment.Name}:${comment.comment}</p>`;
   });
   return guest_book;
 };

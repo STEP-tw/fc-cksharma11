@@ -4,7 +4,6 @@ const app = new Express();
 
 const {
   parseCommentDetails,
-  createJSON,
   createCommentsSection
 } = require('./serverUtils');
 
@@ -12,20 +11,27 @@ const { GUEST_BOOK_URL, COMMENTS_FILE, UTF8 } = require('./constants');
 
 const { logRequest, send, renderFile } = require('./appHelper');
 
+const getComments = function() {
+  const comments = fs.readFileSync(COMMENTS_FILE, UTF8);
+  return JSON.parse(comments);
+};
+
+const comments = getComments();
+
 const serveGuestBookPage = function(req, res) {
   fs.readFile(GUEST_BOOK_URL, UTF8, (error, guestBook) => {
-    fs.readFile(COMMENTS_FILE, UTF8, (error, comments) => {
-      const json = createJSON(comments);
-      const guestBookWithComment = createCommentsSection(guestBook, json);
-      send(res, 200, guestBookWithComment);
-    });
+    console.log(comments);
+    const commentsData = comments.map(createCommentsSection);
+    const commentsHTML = guestBook + commentsData.join('\n');
+    send(res, 200, commentsHTML);
   });
 };
 
 const saveComment = function(req, res) {
   const commentDetails = parseCommentDetails(req.body);
   commentDetails.date = new Date().toLocaleString();
-  fs.appendFile(COMMENTS_FILE, JSON.stringify(commentDetails), error => {
+  comments.unshift(commentDetails);
+  fs.writeFile(COMMENTS_FILE, JSON.stringify(comments), error => {
     serveGuestBookPage(req, res);
   });
 };

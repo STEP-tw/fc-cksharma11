@@ -40,11 +40,16 @@ const readPostData = function(req, res, next) {
   });
 };
 
+const commentsHandler = function(req, res) {
+  const commentsHTML = comment.userComments.map(createCommentsSection);
+  send(res, 200, commentsHTML.join(NEW_LINE));
+};
+
 loadUserComments();
 
 app.use(logRequest);
 app.use(readPostData);
-app.get('/', renderFile);
+app.get('/comments', commentsHandler);
 app.get('/guest_book.html', serveGuestBookPage);
 app.post('/guest_book.html', saveComment);
 app.use(renderFile);

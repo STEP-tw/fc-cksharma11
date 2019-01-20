@@ -1,3 +1,4 @@
 const refreshPage = function() {
-  document.location.reload(true);
+  let c = document.getElementById('comment_section');
+  document.location(c);
 };

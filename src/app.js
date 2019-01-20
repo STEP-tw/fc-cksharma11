@@ -3,6 +3,7 @@ const Express = require('./express');
 const app = new Express();
 const Comment = require('./comments');
 const comment = new Comment();
+const COMMENTS_AREA = '####TO_BE_REPLACED_WITH_COMMENTS####';
 const { parseCommentDetails, createCommentsSection } = require('./serverUtils');
 
 const { GUEST_BOOK_URL, UTF8, NEW_LINE } = require('./constants');
@@ -11,10 +12,14 @@ const { logRequest, send, renderFile } = require('./appHelper');
 
 const loadUserComments = () => comment.readComments();
 
+const createCommentHTML = function(guestBook, comments) {
+  return guestBook.replace(COMMENTS_AREA, comments.join(NEW_LINE));
+};
+
 const serveGuestBookPage = function(req, res) {
   fs.readFile(GUEST_BOOK_URL, UTF8, (error, guestBook) => {
     const commentsData = comment.userComments.map(createCommentsSection);
-    const commentsHTML = guestBook + commentsData.join(NEW_LINE);
+    const commentsHTML = createCommentHTML(guestBook, commentsData);
     send(res, 200, commentsHTML);
   });
 };

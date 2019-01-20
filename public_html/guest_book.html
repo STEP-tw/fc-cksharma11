@@ -3,7 +3,7 @@
   <head>
     <title>Guest Book</title>
     <link rel="stylesheet" type="text/css" href="main.css" />
-    <script src="script.js"></script>
+    <script src="guest_book.js"></script>
   </head>
   <body>
     <div class="input">
@@ -40,19 +40,10 @@
         </table>
       </form>
       <div class="comment">
-        <table id="comments_list">
-          <thead>
-            <tr>
-              DATE_TIME &nbsp;&nbsp;&nbsp;
-            </tr>
-            <tr>
-              NAME &nbsp;&nbsp;&nbsp;
-            </tr>
-            <tr>
-              COMMENT &nbsp;&nbsp;&nbsp;
-            </tr>
-          </thead>
-        </table>
+        Comments <button class="refresh_button" id="refresh_commets" onclick="refreshPage()">&#x21bb;</button>
+        <div id="comment_section">
+          ####TO_BE_REPLACED_WITH_COMMENTS####
+        </div>
       </div>
     </div>
   </body>

@@ -1,25 +1,20 @@
 const fs = require('fs');
 const Express = require('./express');
 const app = new Express();
-
+const Comment = require('./comments');
+const comment = new Comment();
 const { parseCommentDetails, createCommentsSection } = require('./serverUtils');
 
-const { GUEST_BOOK_URL, COMMENTS_FILE, UTF8 } = require('./constants');
+const { GUEST_BOOK_URL, UTF8, NEW_LINE } = require('./constants');
 
 const { logRequest, send, renderFile } = require('./appHelper');
 
-const getComments = function() {
-  const comments = fs.readFileSync(COMMENTS_FILE, UTF8);
-  return JSON.parse(comments);
-};
-
-const comments = getComments();
+const loadUserComments = () => comment.readComments();
 
 const serveGuestBookPage = function(req, res) {
   fs.readFile(GUEST_BOOK_URL, UTF8, (error, guestBook) => {
-    console.log(comments);
-    const commentsData = comments.map(createCommentsSection);
-    const commentsHTML = guestBook + commentsData.join('\n');
+    const commentsData = comment.userComments.map(createCommentsSection);
+    const commentsHTML = guestBook + commentsData.join(NEW_LINE);
     send(res, 200, commentsHTML);
   });
 };
@@ -27,10 +22,8 @@ const serveGuestBookPage = function(req, res) {
 const saveComment = function(req, res) {
   const commentDetails = parseCommentDetails(req.body);
   commentDetails.date = new Date().toLocaleString();
-  comments.unshift(commentDetails);
-  fs.writeFile(COMMENTS_FILE, JSON.stringify(comments), error => {
-    serveGuestBookPage(req, res);
-  });
+  comment.addComment(commentDetails);
+  serveGuestBookPage(req, res);
 };
 
 const readPostData = function(req, res, next) {
@@ -41,6 +34,8 @@ const readPostData = function(req, res, next) {
     next();
   });
 };
+
+loadUserComments();
 
 app.use(logRequest);
 app.use(readPostData);

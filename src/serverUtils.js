@@ -2,13 +2,13 @@ const parseCommentDetails = function(comment) {
   const commentObject = new Object();
   const decodedComment = decodeURIComponent(comment).replace(/\+/g, ' ');
   const [, author, , commentText] = decodedComment.split(/=|&/);
-  commentObject.Name = author;
+  commentObject.name = author;
   commentObject.comment = commentText;
   return commentObject;
 };
 
-const createCommentsSection = function(comment) {
-  return `<p>${comment.date}:${comment.Name}:${comment.comment}</p>`;
+const createCommentsSection = function({ date, name, comment }) {
+  return `<p>${date}: <strong>${name}</strong> : ${comment}</p>`;
 };
 
 module.exports = {

@@ -19,6 +19,11 @@
 }
 
 .comment{
+  padding: 2px;
   margin-top: 20px;
   border-top:1px solid black;
+}
+.refresh_button{  
+  padding: 5px;
+  width: 40px;
 }

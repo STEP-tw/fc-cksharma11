@@ -8,7 +8,8 @@ const parseCommentDetails = function(comment) {
 };
 
 const createCommentsSection = function({ date, name, comment }) {
-  return `<p>${date}: <strong>${name}</strong> : ${comment}</p>`;
+  const localDate = new Date(date).toLocaleString();
+  return `<p>${localDate}: <strong>${name}</strong> : ${comment}</p>`;
 };
 
 module.exports = {

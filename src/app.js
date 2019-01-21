@@ -48,7 +48,7 @@ const serveGuestBookPage = function(req, res) {
 
 const saveComment = function(req, res) {
   const commentDetails = parseCommentDetails(req.body);
-  commentDetails.date = new Date().toLocaleString();
+  commentDetails.date = new Date();
   comment.addComment(commentDetails);
   serveGuestBookPage(req, res);
 };

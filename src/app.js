@@ -4,16 +4,11 @@ const app = new Express();
 const Comment = require('./comments');
 const comment = new Comment();
 const { parseCommentDetails } = require('./serverUtils');
-const { GUEST_BOOK_URL, UTF8, EMPTY_STRING } = require('./constants');
+const { EMPTY_STRING } = require('./constants');
 const { logRequest, send, renderFile } = require('./appHelper');
+const { doLogin, serveGuestBookPage } = require('./guestBookManager');
 
 const loadUserComments = () => comment.readComments();
-
-const serveGuestBookPage = function(req, res) {
-  fs.readFile(GUEST_BOOK_URL, UTF8, (error, guestBook) => {
-    send(res, 200, guestBook);
-  });
-};
 
 const saveComment = function(req, res) {
   const commentDetails = parseCommentDetails(req.body);
@@ -42,6 +37,7 @@ app.use(readPostData);
 app.get('/comments', commentsHandler);
 app.get('/guest_book.html', serveGuestBookPage);
 app.post('/guest_book.html', saveComment);
+app.post('/login', doLogin);
 app.use(renderFile);
 
 module.exports = app.handleRequest.bind(app);

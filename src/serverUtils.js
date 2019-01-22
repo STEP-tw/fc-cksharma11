@@ -7,7 +7,15 @@ const parseCommentDetails = function(comment) {
   return commentObject;
 };
 
+const splitKeyValue = pair => pair.split('=');
+
+const assignKeyValue = (parameters, [key, value]) => {
+  parameters[key] = unescape(unescape(value));
+  return parameters;
+};
 
 module.exports = {
   parseCommentDetails,
+  splitKeyValue,
+  assignKeyValue
 };

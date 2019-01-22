@@ -4,9 +4,7 @@ const app = new Express();
 const Comment = require('./comments');
 const comment = new Comment();
 const { parseCommentDetails } = require('./serverUtils');
-
 const { GUEST_BOOK_URL, UTF8, EMPTY_STRING } = require('./constants');
-
 const { logRequest, send, renderFile } = require('./appHelper');
 
 const loadUserComments = () => comment.readComments();

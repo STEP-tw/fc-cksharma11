@@ -1,19 +1,23 @@
-const fs = require('fs');
 const Express = require('./express');
 const app = new Express();
 const Comment = require('./comments');
-const comment = new Comment();
+const comments = new Comment();
 const { parseCommentDetails } = require('./serverUtils');
 const { EMPTY_STRING } = require('./constants');
 const { logRequest, send, renderFile } = require('./appHelper');
 const { doLogin, serveGuestBookPage, doLogout } = require('./guestBookManager');
 
-const loadUserComments = () => comment.readComments();
+const loadUserComments = () => comments.readComments();
+
+const getLoggedInUser = function(req) {
+  return EMPTY_STRING + req.headers.cookie.substr(16);
+};
 
 const saveComment = function(req, res) {
-  const commentDetails = parseCommentDetails(req.body);
-  commentDetails.date = new Date();
-  comment.addComment(commentDetails);
+  const comment = unescape(req.body.split('=')[1]);
+  const date = new Date();
+  const name = getLoggedInUser(req);
+  comments.addComment({ date, name, comment });
   serveGuestBookPage(req, res);
 };
 
@@ -27,7 +31,7 @@ const readPostData = function(req, res, next) {
 };
 
 const commentsHandler = function(req, res) {
-  send(res, 200, JSON.stringify(comment.userComments));
+  send(res, 200, JSON.stringify(comments.userComments));
 };
 
 loadUserComments();

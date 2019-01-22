@@ -6,7 +6,7 @@ const comment = new Comment();
 const { parseCommentDetails } = require('./serverUtils');
 const { EMPTY_STRING } = require('./constants');
 const { logRequest, send, renderFile } = require('./appHelper');
-const { doLogin, serveGuestBookPage } = require('./guestBookManager');
+const { doLogin, serveGuestBookPage, doLogout } = require('./guestBookManager');
 
 const loadUserComments = () => comment.readComments();
 
@@ -38,6 +38,7 @@ app.get('/comments', commentsHandler);
 app.get('/guest_book.html', serveGuestBookPage);
 app.post('/guest_book.html', saveComment);
 app.post('/login', doLogin);
+app.post('/logout', doLogout);
 app.use(renderFile);
 
 module.exports = app.handleRequest.bind(app);

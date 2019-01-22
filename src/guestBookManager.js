@@ -4,7 +4,9 @@ const {
   LOGIN_FORM_TEMPLATE,
   COMMENT_FORM_TEMPLATE,
   GUEST_BOOK_TEMPLATE,
-  FORM_PLACEHOLDER
+  FORM_PLACEHOLDER,
+  USERNAME_PLACEHOLDER,
+  EMPTY_STRING
 } = require('./constants');
 const { parseCommentDetails } = require('./serverUtils');
 const { splitKeyValue, assignKeyValue } = require('./serverUtils');
@@ -32,8 +34,10 @@ const LOGIN_FORM_HTML = fs.readFileSync(LOGIN_FORM_TEMPLATE, UTF8);
 const COMMENT_FORM_HTML = fs.readFileSync(COMMENT_FORM_TEMPLATE, UTF8);
 const GUEST_BOOK_HTML = fs.readFileSync(GUEST_BOOK_TEMPLATE, UTF8);
 
-const getCommentsForm = function() {
-  return GUEST_BOOK_HTML.replace(FORM_PLACEHOLDER, COMMENT_FORM_HTML);
+const getCommentsForm = function(req) {
+  const name = EMPTY_STRING + req.headers.cookie.substr(16);
+  const commentForm = COMMENT_FORM_HTML.replace(USERNAME_PLACEHOLDER, name);
+  return GUEST_BOOK_HTML.replace(FORM_PLACEHOLDER, commentForm);
 };
 
 const getLoginForm = function() {
@@ -43,7 +47,7 @@ const getLoginForm = function() {
 const serveGuestBookPage = function(req, res, next) {
   let guestBookPageHTML = getLoginForm();
   if (isUserLoggedIn(req)) {
-    guestBookPageHTML = getCommentsForm();
+    guestBookPageHTML = getCommentsForm(req);
   }
   send(res, 200, guestBookPageHTML);
 };
@@ -57,7 +61,17 @@ const doLogin = function(req, res) {
   res.end();
 };
 
+const doLogout = function(req, res) {
+  const { name } = parseCommentDetails(req.body);
+  const expiryDate = 'Wed, 31 Oct 2012 08: 50: 17 GMT';
+  res.setHeader('Set-Cookie', `username=${name}; expires=${expiryDate}`);
+  res.statusCode = 302;
+  res.setHeader('location', '/guest_book.html');
+  res.end();
+};
+
 module.exports = {
   doLogin,
-  serveGuestBookPage
+  serveGuestBookPage,
+  doLogout
 };

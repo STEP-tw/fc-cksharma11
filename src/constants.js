@@ -9,6 +9,7 @@ const LOGIN_FORM_TEMPLATE = './data/login_form.template.html';
 const COMMENT_FORM_TEMPLATE = './data/comment_form.template.html';
 const GUEST_BOOK_TEMPLATE = './data/guest_book.template.html';
 const FORM_PLACEHOLDER = '___FORM_GOES_HERE___';
+const USERNAME_PLACEHOLDER = '__USERNAME_PLACEHOLDER__';
 
 module.exports = {
   HOME_DIR,
@@ -21,5 +22,6 @@ module.exports = {
   LOGIN_FORM_TEMPLATE,
   COMMENT_FORM_TEMPLATE,
   GUEST_BOOK_TEMPLATE,
-  FORM_PLACEHOLDER
+  FORM_PLACEHOLDER,
+  USERNAME_PLACEHOLDER
 };

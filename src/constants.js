@@ -4,6 +4,7 @@ const GUEST_BOOK_URL = './public_html/guest_book.html';
 const COMMENTS_FILE = './data/comments.json';
 const UTF8 = 'UTF8';
 const NEW_LINE = '\n';
+const EMPTY_STRING = '';
 
 module.exports = {
   HOME_DIR,
@@ -11,5 +12,6 @@ module.exports = {
   GUEST_BOOK_URL,
   COMMENTS_FILE,
   UTF8,
-  NEW_LINE
+  NEW_LINE,
+  EMPTY_STRING
 };

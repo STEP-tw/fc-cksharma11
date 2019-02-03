@@ -1,4 +1,3 @@
-const { send } = require('./appHelper');
 const {
   UTF8,
   LOGIN_FORM_TEMPLATE,
@@ -49,25 +48,21 @@ const serveGuestBookPage = function(req, res, next) {
   if (isUserLoggedIn(req)) {
     guestBookPageHTML = getCommentsForm(req);
   }
-  send(res, 200, guestBookPageHTML);
+  res.send(guestBookPageHTML);
 };
 
 const doLogin = function(req, res) {
   const { name } = parseCommentDetails(req.body);
   loggedInUsers.push(name);
   res.setHeader('Set-Cookie', `username=${name}`);
-  res.statusCode = 302;
-  res.setHeader('location', '/guest_book.html');
-  res.end();
+  res.redirect('/guest_book.html');
 };
 
 const doLogout = function(req, res) {
   const { name } = parseCommentDetails(req.body);
   const expiryDate = 'Wed, 31 Oct 2012 08: 50: 17 GMT';
   res.setHeader('Set-Cookie', `username=${name}; expires=${expiryDate}`);
-  res.statusCode = 302;
-  res.setHeader('location', '/guest_book.html');
-  res.end();
+  res.redirect('/guest_book.html');
 };
 
 module.exports = {

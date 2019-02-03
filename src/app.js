@@ -1,10 +1,9 @@
-const Express = require('./express');
+const Express = require('express');
 const app = new Express();
 const Comment = require('./comments');
 const comments = new Comment();
-const { parseCommentDetails } = require('./serverUtils');
 const { EMPTY_STRING } = require('./constants');
-const { logRequest, send, renderFile } = require('./appHelper');
+const { logRequest } = require('./appHelper');
 const { doLogin, serveGuestBookPage, doLogout } = require('./guestBookManager');
 
 const loadUserComments = () => comments.readComments();
@@ -31,7 +30,7 @@ const readPostData = function(req, res, next) {
 };
 
 const commentsHandler = function(req, res) {
-  send(res, 200, JSON.stringify(comments.userComments));
+  res.send(JSON.stringify(comments.userComments));
 };
 
 loadUserComments();
@@ -43,6 +42,6 @@ app.get('/guest_book.html', serveGuestBookPage);
 app.post('/guest_book.html', saveComment);
 app.post('/login', doLogin);
 app.post('/logout', doLogout);
-app.use(renderFile);
+app.use(Express.static('public_html'));
 
-module.exports = app.handleRequest.bind(app);
+module.exports = app;

@@ -1,4 +1,5 @@
 const parseCommentDetails = function(comment) {
+  console.log(comment);
   const commentObject = new Object();
   const decodedComment = decodeURIComponent(comment).replace(/\+/g, ' ');
   const [, author, , commentText] = decodedComment.split(/=|&/);

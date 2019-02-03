@@ -1,4 +1,5 @@
 const Express = require('express');
+const cookieParser = require('cookie-parser');
 const app = new Express();
 const Comment = require('./comments');
 const comments = new Comment();
@@ -37,6 +38,7 @@ loadUserComments();
 
 app.use(logRequest);
 app.use(readPostData);
+app.use(cookieParser());
 app.get('/comments', commentsHandler);
 app.get('/guest_book.html', serveGuestBookPage);
 app.post('/guest_book.html', saveComment);

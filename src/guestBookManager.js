@@ -8,25 +8,16 @@ const {
   EMPTY_STRING
 } = require('./constants');
 const { parseCommentDetails } = require('./serverUtils');
-const { splitKeyValue, assignKeyValue } = require('./serverUtils');
 const fs = require('fs');
 
 const loggedInUsers = [];
-
-const readCookies = function(cookieHeader) {
-  return cookieHeader
-    .split('; ')
-    .map(splitKeyValue)
-    .reduce(assignKeyValue, {});
-};
 
 const isUserLoggedIn = function(req) {
   const cookieHeader = req.headers.cookie;
   if (!cookieHeader) {
     return false;
   }
-  const cookies = readCookies(cookieHeader);
-  return loggedInUsers.includes(cookies.username);
+  return loggedInUsers.includes(req.cookies.username);
 };
 
 const LOGIN_FORM_HTML = fs.readFileSync(LOGIN_FORM_TEMPLATE, UTF8);
@@ -34,7 +25,7 @@ const COMMENT_FORM_HTML = fs.readFileSync(COMMENT_FORM_TEMPLATE, UTF8);
 const GUEST_BOOK_HTML = fs.readFileSync(GUEST_BOOK_TEMPLATE, UTF8);
 
 const getCommentsForm = function(req) {
-  const name = EMPTY_STRING + req.headers.cookie.substr(16);
+  const name = EMPTY_STRING + req.cookies.username;
   const commentForm = COMMENT_FORM_HTML.replace(USERNAME_PLACEHOLDER, name);
   return GUEST_BOOK_HTML.replace(FORM_PLACEHOLDER, commentForm);
 };
